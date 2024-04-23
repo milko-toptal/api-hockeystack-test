@@ -22,3 +22,20 @@ The implementation of the server and the ```server.js``` is not important for th
 
 Every data source in this project was created for test purposes. If any request takes more than 5 seconds to execute, there is something wrong with the implementation.
 
+## Improvements
+
+1. I would suggest improving the code initially by using TypeScript everywhere and enforcing type-checking with ESLint validations. In this way, we can minimize errors. Also, I would suggest splitting the code that is in worker.js into separate service files, probably one for each separate processing task (e.g., ContactsService.ts, MeetingsService.ts, etc.). Each file will have smaller functions with defined functionality instead of one big function performing the entire processing (e.g., getNewlyModifiedMeetings(), getMeetingsAssociation(meetingIds), persistMeetings(...), processMeetings()).
+2. For improving the project architecture, I would create separate folders, splitting the configurations from the code and then separating different modules/features inside subfolders. For example:
+    - src/
+      - features
+        - hubspot
+          - HubspotProcessor.ts (processMeetings(), processContacts(), processCompanies() etc)
+          - MeetingsService.ts
+          - ContactsService.ts
+          - CompanyService.ts
+        - utilities
+          - utils.ts
+      - app.ts
+      - service.ts
+    - package.json
+3. For optimizing performance, we can have separate executions for each processor: one for Meetings, one for Contacts, one for Companies, etc. Every processor will be called individually at different times and periods in this way. We can even improve it further by using a queue for queuing different batch sizes so that we can process smaller chunks at a time. Another option that may be considered is using Hubspot webhooks in conjunction with the pulling mechanism. In this way, we can trigger processing when some quantity of new objects is created or modified.
